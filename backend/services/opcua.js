@@ -14,29 +14,69 @@ OPCUA.AttributeIds = AttributeIds;
 OPCUA.ClientMonitoredItemGroup =ClientMonitoredItemGroup;
 OPCUA.TimestampsToReturn =TimestampsToReturn;
 OPCUA.variablesSuscritas = Array();
+OPCUA.options ={endpoint_must_exist: false};
 
 
 
 
 OPCUA.crearCliente = async () => {
-	//debería comprobarse si se pudo conectar.	
-	OPCUA.client = await OPCUAClient.create(options);
+	try{
+		OPCUA.client = await OPCUAClient.create(OPCUA.options);
+	}
+	catch(e){
+		console.log(e);
+	}
+	console.log("Cliente OPCUA creado");
 }
+
+
 
 OPCUA.conectar = async (endpoint) => {
-	await OPCUA.client.connect(endpoint);
+	try{		
+		await OPCUA.client.connect(endpoint);
+	}
+	catch(e){
+		console.log(e);
+	}
+	console.log("Conectado al endpoint: ", endpoint)
 }
+
+
 
 OPCUA.crearSesion = async () => {
-	OPCUA.session = await client.createSession();
+	try{
+		OPCUA.session = await OPCUA.client.createSession();
+	}
+	catch(e){
+		console.log(e);		
+	}
+	console.log("Sesion OPCUA Creada");
 }
+
+
 
 OPCUA.cerrarSesion =async () => {
-	await OPCUA.session.close();
+	try{
+		await OPCUA.session.close();
+	}
+	catch(e){
+		console.log(e);		
+	}
+	console.log("Sesion OPCUA Cerrada");
+	
 }
 
-OPCUA.desconectar = async () => {	
-	await OPCUA.client.disconnect();
+
+
+OPCUA.desconectar = async () => {
+	try{
+		await OPCUA.client.disconnect();
+	}
+	catch(e){
+		console.log(e);		
+	}
+	console.log("Desconectando del endpoint OPCUA");
+	
 }
 
 

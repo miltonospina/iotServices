@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('backend:server');
 var http = require('http');
 var opcua = require('./opcua.js');
+var config = require('../config.js');
 
 /**
  * Get port from environment and store in Express.
@@ -29,6 +30,37 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+
+
+(async ()=>{
+  await opcua.crearCliente();
+
+  await opcua.conectar(config.endpoint);
+
+  await opcua.crearSesion();
+
+  await opcua.cerrarSesion();
+
+  await opcua.desconectar();
+
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Normalize a port into a number, string, or false.
