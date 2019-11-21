@@ -36,24 +36,7 @@ server.on('listening', onListening);
 
 
 
-(async ()=>{
-try{
-
-  await opcuaClient.conectar(config.endpoint);
-
-  await opcuaClient.crearSesion();
-
-  await opcuaClient.cerrarSesion();
-
-  await opcuaClient.desconectar();
-}
-catch(err){
-  console.log(err)
-}
-})();
-
-
-
+opcuaClient.conectar(config.endpoint);
 
 
 
