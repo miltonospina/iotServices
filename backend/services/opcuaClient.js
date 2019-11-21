@@ -17,65 +17,80 @@ OPCUA.variablesSuscritas = Array();
 OPCUA.options ={endpoint_must_exist: false};
 
 
-
-
-OPCUA.crearCliente = async () => {
-	try{
-		OPCUA.client = await OPCUAClient.create(OPCUA.options);
-	}
-	catch(e){
-		console.log(e);
-	}
-	console.log("Cliente OPCUA creado");
-}
-
+OPCUA.conexionEstablecida=true;
+OPCUA.sesionEstablecida= true;
 
 
 OPCUA.conectar = async (endpoint) => {
-	try{		
-		await OPCUA.client.connect(endpoint);
-	}
-	catch(e){
-		console.log(e);
-	}
-	console.log("Conectado al endpoint: ", endpoint)
+	OPCUA.cliente = await OPCUA.client.create(OPCUA.options);
+	await OPCUA.cliente.connect(endpoint, function (err) {
+		if (err) {
+			console.log(err)
+			console.log("imposible conectar con el endpoint :".red, endpoint);
+			throw err;
+		} else {
+			console.log("Conectado al endpoint OPCUA!");
+			OPCUA.conexionEstablecida=true;
+		}
+	});
+
+	OPCUA.cliente.on("timed_out_request ", function () {
+		console.log("timed_out_request ");
+	});
+
+	OPCUA.cliente.on("start_reconnection", function () {
+		console.log("start_reconnection not working so aborting");
+	});
+	OPCUA.cliente.on("connection_reestablished", function () {
+		console.log("connection_reestablished ");
+	});
+	OPCUA.cliente.on("close", function () {
+		console.log("close and abort");
+		opcuaServerUp = false;
+	});
+	OPCUA.cliente.on("backoff", function (nb, delay) {
+		console.log("  connection failed for the", nb,
+				" time ... We will retry in ", delay, " ms");
+		opcuaServerUp = false;
+	});
 }
+
+
 
 
 
 OPCUA.crearSesion = async () => {
-	try{
-		OPCUA.session = await OPCUA.client.createSession();
+	if(OPCUA.conexionEstablecida){
+		OPCUA.session = await OPCUA.cliente.createSession();
+		console.log("Sesion OPCUA Creada");
+		}
+	else{
+	console.log("Imposible crear sesion, no se ha establecido la conexion al endpoint")	
 	}
-	catch(e){
-		console.log(e);		
-	}
-	console.log("Sesion OPCUA Creada");
 }
 
 
 
 OPCUA.cerrarSesion =async () => {
-	try{
+	if(OPCUA.sesionEstablecida){
 		await OPCUA.session.close();
+		console.log("Sesion OPCUA Cerrada");
+	}else{
+		console.log("Imposible cerrar sesión, no existe una sesión actualmente")
 	}
-	catch(e){
-		console.log(e);		
-	}
-	console.log("Sesion OPCUA Cerrada");
-	
 }
 
 
 
 OPCUA.desconectar = async () => {
-	try{
-		await OPCUA.client.disconnect();
+	if(OPCUA.conexionEstablecida){
+		await OPCUA.cliente.disconnect();
+		console.log("Desconectando del endpoint OPCUA");1
 	}
-	catch(e){
-		console.log(e);		
+	else{
+		console.log("No existe conexion actualmente")
 	}
-	console.log("Desconectando del endpoint OPCUA");
+	
 	
 }
 
