@@ -7,7 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('backend:server');
 var http = require('http');
-var opcua = require('./opcua.js');
+var opcuaClient = require('./opcuaClient.js');
 var config = require('../config.js');
 
 /**
@@ -34,15 +34,15 @@ server.on('listening', onListening);
 
 
 (async ()=>{
-  await opcua.crearCliente();
+  await opcuaClient.crearCliente();
 
-  await opcua.conectar(config.endpoint);
+  await opcuaClient.conectar(config.endpoint);
 
-  await opcua.crearSesion();
+  await opcuaClient.crearSesion();
 
-  await opcua.cerrarSesion();
+  await opcuaClient.cerrarSesion();
 
-  await opcua.desconectar();
+  await opcuaClient.desconectar();
 
 })();
 
