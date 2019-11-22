@@ -139,12 +139,12 @@ OPCUA.agregarSubscripcion = async(variables,fxMonitoreo,callback) => {
 			OPCUA.leerVariable(estaVariable,fxMonitoreo);
 
 			//agrega la variable al array de variables monitoreadas
-			OPCUA.variablesMonitoreadas.push(variableMonitoreada);
+			OPCUA.variablesMonitoreadas.push(estaVariable);
 
 			console.log("Agregando al monitoreo: ",estaVariable.nodeId.value);
 
 			//ejecuta la función callback entregando la lista de monitoreo limpia
-			callback(limpiarArray(OPCUA.variablesMonitoreadas));
+			
 
 		}
 		else
@@ -152,7 +152,8 @@ OPCUA.agregarSubscripcion = async(variables,fxMonitoreo,callback) => {
 			console.log("La variable ya está suscrita: ".yellow + estaVariable.nodeId );
 		}
 
-		//callback()
+		//callback(limpiarArray(OPCUA.variablesMonitoreadas));
+		callback(OPCUA.variablesMonitoreadas);
 
 	}
 

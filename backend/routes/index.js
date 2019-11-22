@@ -21,8 +21,11 @@ router.get('/monitorear', function(req,res,next){
 
 	(res.app.get("opcuaClient")).agregarSubscripcion(variables,
 		function(r){console.log("monitoreo:",r.value.value)},
-		function(cb){console.log(cb.subscription)}
+		function(cb){
+			x= cb[0];
+			console.log(x)
+		}
 		);
-	//res.send("Agregado al monitoreo");
+	res.send("Agregado al monitoreo");
 });
 module.exports = router;
