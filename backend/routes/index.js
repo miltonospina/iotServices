@@ -16,13 +16,13 @@ router.get('/desconectar', function(req,res,next){
 router.get('/monitorear', function(req,res,next){
 
 	var variables= Array();
-	variables.push({nodeId:"ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/PV_ELLIOT.SI"});
-	variables.push({nodeId:"ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.L_Cerrito_P"});
+	/*variables.push({nodeId:});
+	variables.push({nodeId:"ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.L_Cerrito_P"});*/
 
-	(res.app.get("opcuaClient")).agregarSubscripcion(variables,
+	(res.app.get("opcuaClient")).agregarSubscripcion2("ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/PV_ELLIOT.SI",
 		function(r){console.log("monitoreo:",r.value.value)},
 		function(cb){
-			x= cb[0];
+			x= cb;
 			console.log(x)
 		}
 		);

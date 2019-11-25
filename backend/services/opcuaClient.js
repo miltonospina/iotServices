@@ -18,8 +18,8 @@ OPCUA.TimestampsToReturn =TimestampsToReturn;
 OPCUA.variablesMonitoreadas = Array();
 OPCUA.opciones ={endpoint_must_exist: false};
 OPCUA.subsParams = {
-    requestedPublishingInterval: 2000,
-    requestedMaxKeepAliveCount: 20,
+    requestedPublishingInterval: 1000,
+    requestedMaxKeepAliveCount: 10,
     requestedLifetimeCount: 6000,
     maxNotificationsPerPublish: 1000,
     publishingEnabled: true,
@@ -118,47 +118,70 @@ OPCUA.agregarSubscripcion = async(variables,fxMonitoreo,callback) => {
 	//para cada una de las variables a suscribir...
 	for (let i = 0; i < variables.length; i++) {
 
-		var variableMonitoreada =Array();
-		const estaVariable = variables[i];
+		var estaVariable = variables[i];
+		var monitoredItem;
 		//Evalua si la variable ya se encuentra en monitoreo	
 		if(typeof (OPCUA.variablesMonitoreadas.find(item =>item.nodeId== estaVariable.nodeId)) === "undefined"){
 
 			//agrega la variable al monitoreo
-
 			try{
-				variableMonitoreada = await OPCUA.subscripcion.monitor(estaVariable, OPCUA.monitorParams, TimestampsToReturn.Both);
+				monitoredItem = await OPCUA.subscripcion.monitor(estaVariable, OPCUA.monitorParams, TimestampsToReturn.Both);
 
 				//agrega la función que se ejecutará cuando la variable monitoreada cambie
-	        	variableMonitoreada.on("changed", (dataValue) => { fxMonitoreo(dataValue.value.toString())});
+	        	monitoredItem.on("initialized", (dataValue) => {
+					fxMonitoreo(dataValue.value.toString());
+					console.log(dataValue.value.toString());
+				});
+				monitoredItem.on("changed", (dataValue) => {
+					fxMonitoreo(dataValue.value.toString());
+					console.log(dataValue.value.toString());
+				});
 			}
 			catch(err){
 				console.log(err);
 			}
-
-	        //consulta la variable por primera vez; si la variable es lenta el primer dato no se ve
-			OPCUA.leerVariable(estaVariable,fxMonitoreo);
-
+			
+			estaVariable.monitoredItem= monitoredItem;
 			//agrega la variable al array de variables monitoreadas
 			OPCUA.variablesMonitoreadas.push(estaVariable);
-
 			console.log("Agregando al monitoreo: ",estaVariable.nodeId.value);
-
-			//ejecuta la función callback entregando la lista de monitoreo limpia
-			
 
 		}
 		else
 		{
 			console.log("La variable ya está suscrita: ".yellow + estaVariable.nodeId );
 		}
-
-		//callback(limpiarArray(OPCUA.variablesMonitoreadas));
-		callback(OPCUA.variablesMonitoreadas);
-
 	}
-
+	//ejecuta la función callback entregando la lista de monitoreo limpia
+	callback(limpiarArray(OPCUA.variablesMonitoreadas));
 }
 
+
+
+
+OPCUA.agregarSubscripcion2 = async(variable,fxMonitoreo,callback) => {
+	try{
+		console.log(variable);
+		monitoredItem = await OPCUA.subscripcion.monitor({nodeId:variable}, OPCUA.monitorParams, TimestampsToReturn.Both);
+		//agrega la función que se ejecutará cuando la variable monitoreada cambie
+		monitoredItem.on("initialized", (dataValue) => {
+			fxMonitoreo(dataValue.value.toString());
+			console.log(dataValue.value.toString());
+		});
+		monitoredItem.on("changed", (dataValue) => {
+			fxMonitoreo(dataValue.value.toString());
+			console.log(dataValue.value.toString());
+		});
+
+		callback("OK:", );
+		OPCUA.variablesMonitoreadas.push(monitoredItem);
+	}
+	catch(err)
+	{
+		callback("error: ",err);
+		console.log("gregarSubscrpcion2: ".red,err);
+	}
+}
 
 
 
@@ -169,7 +192,7 @@ OPCUA.removerSubscripcion = async(variables) => {
 
 
 function limpiarArray(ar){
-	const respuesta = ar;
+	var respuesta = ar;
 	for (let i = 0; i < respuesta.length; i++) {
 		try{
 			delete respuesta[i].monitoredItem;

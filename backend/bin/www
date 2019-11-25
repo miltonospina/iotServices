@@ -24,6 +24,8 @@ app.set('opcuaClient',opcuaClient);
  */
 
 var server = http.createServer(app);
+console.log("Servidor web iniciado en http://localhost:",port);
+
 
 /**
  * Listen on provided port, on all network interfaces.
