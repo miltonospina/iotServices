@@ -16,16 +16,38 @@ router.get('/desconectar', function(req,res,next){
 router.get('/monitorear', function(req,res,next){
 
 	var variables= Array();
-	/*variables.push({nodeId:});
-	variables.push({nodeId:"ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.L_Cerrito_P"});*/
+	//"ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/PV_ELLIOT.SI"
+	//"ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.L_Cerrito_P"
 
-	(res.app.get("opcuaClient")).agregarSubscripcion2("ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/PV_ELLIOT.SI",
-		function(r){console.log("monitoreo:",r.value.value)},
-		function(cb){
-			x= cb;
-			console.log(x)
+	(res.app.get("opcuaClient")).agregarSubscripcion2("ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.CALC_ESCAPE_CABEZAL",
+	function(nombre,valor){
+		console.log("monitoreo:[",nombre,"]: ",valor)
+	},
+	function(cb,err){
+		if(err){
+			console.log(err);
+			res.status(500).send("Imposible agregar al monitoreo: "+ err.message);
+		}else{
+			console.log(cb);
+			res.send(cb);
 		}
-		);
-	res.send("Agregado al monitoreo");
+	});
 });
+
+
+router.delete('/monitorear', function(req,res,next){
+	
+	(res.app.get("opcuaClient")).removerSubscripcion("ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.CALC_ESCAPE_CABEZAL",
+		(respuesta,error)=>{
+			if(error){
+				res.status(500).send("Imposible eliminar la variable monitoreada: "+ error.message);
+			}
+			else{
+				res.send(respuesta);
+			}
+		})
+});
+
+
+
 module.exports = router;

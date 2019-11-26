@@ -10,6 +10,9 @@ var http = require('http');
 var config = require('../config.js');
 var async = require('async');
 
+
+
+
 var opcuaClient = require('../services/opcuaClient.js');
 
 /**
@@ -17,6 +20,8 @@ var opcuaClient = require('../services/opcuaClient.js');
  */
 
 var port = normalizePort(process.env.PORT || '3000');
+
+
 app.set('port', port);
 app.set('opcuaClient',opcuaClient);
 /**

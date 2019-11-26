@@ -53,11 +53,11 @@ OPCUA.conectar = async (endpoint) => {
 		//Crear Subscripción
 		OPCUA.subscripcion= await OPCUA.sesion.createSubscription2(OPCUA.subsParams);
 		OPCUA.subscripcion.on("keepalive", function () {
-            console.log("Subscripción: keepalive");
-        }).on("terminated", function () {
-            console.log(" Susbsripción finalizada")
-        });
-        console.log("Objeto de subsripción creado".green);
+			console.log("Subscripción: keepalive");
+		}).on("terminated", function () {
+			console.log(" Susbsripción finalizada")
+		});
+		console.log("Objeto de subsripción creado".green);
 	}
 	catch(err){
 		console.log("OCPUA.conectar ERROR: ",err);
@@ -75,7 +75,6 @@ OPCUA.desconectar =async () => {
 		//Cerrar conexión
 		await OPCUA.cliente.disconnect();
 		console.log("Cliente OPCUA desconectado".green);
-		
 	}
 	catch(err){
 		console.log("OCPUA.cerrarSesion ERROR: ".red,err);
@@ -159,33 +158,61 @@ OPCUA.agregarSubscripcion = async(variables,fxMonitoreo,callback) => {
 
 
 
-OPCUA.agregarSubscripcion2 = async(variable,fxMonitoreo,callback) => {
-	try{
-		console.log(variable);
-		monitoredItem = await OPCUA.subscripcion.monitor({nodeId:variable}, OPCUA.monitorParams, TimestampsToReturn.Both);
-		//agrega la función que se ejecutará cuando la variable monitoreada cambie
-		monitoredItem.on("initialized", (dataValue) => {
-			fxMonitoreo(dataValue.value.toString());
-			console.log(dataValue.value.toString());
-		});
-		monitoredItem.on("changed", (dataValue) => {
-			fxMonitoreo(dataValue.value.toString());
-			console.log(dataValue.value.toString());
-		});
+OPCUA.agregarSubscripcion2 = (variable,fxMonitoreo,callback) => {
+	try {
+		OPCUA.subscripcion.monitor(
+			{nodeId: variable, attributeId: 13},
+			OPCUA.monitorParams,
+			TimestampsToReturn.Both,
+			(err,monitoredItem)=>{
+				if (err) {
+					console.log("cannot create monitored item", err.message);
+					callback(null,err);
+					return;
+				}
+				OPCUA.variablesMonitoreadas.push({nombre:variable,item:monitoredItem});
+				delete monitoredItem;
+				largo= OPCUA.variablesMonitoreadas.length-1;
 
-		callback("OK:", );
-		OPCUA.variablesMonitoreadas.push(monitoredItem);
+				OPCUA.variablesMonitoreadas[largo].item.on("changed", (DataValue) => {
+					fxMonitoreo(variable,DataValue.value.value);
+				});
+				OPCUA.variablesMonitoreadas[largo].item.on("initialized", (DataValue) => {
+					fxMonitoreo(variable,DataValue.value.value);
+				});
+
+
+				callback(Date.now()+": Agregando al monitoreo: "+variable);
+				//callback(Date.now()+": Agregando al monitoreo: "+OPCUA.variablesMonitoreadas[largo]);
+			});
 	}
-	catch(err)
-	{
-		callback("error: ",err);
-		console.log("gregarSubscrpcion2: ".red,err);
+	catch(err) {
+		console.log("catch err: ",err);
+		callback(null,err);
 	}
 }
 
 
 
-OPCUA.removerSubscripcion = async(variables) => {
+
+OPCUA.removerSubscripcion = async(variable,callback) => {
+	try{
+		OPCUA.variablesMonitoreadas.forEach((entry, i) => {
+			
+		});
+
+		aEliminar = OPCUA.variablesMonitoreadas.filter((item)=>{return item.nombre!=  variable});
+		aEliminar.terminate(()=>{
+			OPCUA.variablesMonitoreadas= OPCUA.variablesMonitoreadas.filter((item)=>{return item.nombre!=  variable});
+			aEliminar=null;
+			callback("Variable eliminada de la subsripción:"+variable);
+
+		});
+		
+	}catch(err)
+	{
+		callback(null,err);
+	}
 }
 
 
