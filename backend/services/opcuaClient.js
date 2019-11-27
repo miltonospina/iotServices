@@ -112,53 +112,9 @@ OPCUA.escribirVariable= async (nodo, valor,callback) => {
 
 
 
-OPCUA.agregarSubscripcion = async(variables,fxMonitoreo,callback) => {	
-	
-	//para cada una de las variables a suscribir...
-	for (let i = 0; i < variables.length; i++) {
-
-		var estaVariable = variables[i];
-		var monitoredItem;
-		//Evalua si la variable ya se encuentra en monitoreo	
-		if(typeof (OPCUA.variablesMonitoreadas.find(item =>item.nodeId== estaVariable.nodeId)) === "undefined"){
-
-			//agrega la variable al monitoreo
-			try{
-				monitoredItem = await OPCUA.subscripcion.monitor(estaVariable, OPCUA.monitorParams, TimestampsToReturn.Both);
-
-				//agrega la función que se ejecutará cuando la variable monitoreada cambie
-	        	monitoredItem.on("initialized", (dataValue) => {
-					fxMonitoreo(dataValue.value.toString());
-					console.log(dataValue.value.toString());
-				});
-				monitoredItem.on("changed", (dataValue) => {
-					fxMonitoreo(dataValue.value.toString());
-					console.log(dataValue.value.toString());
-				});
-			}
-			catch(err){
-				console.log(err);
-			}
-			
-			estaVariable.monitoredItem= monitoredItem;
-			//agrega la variable al array de variables monitoreadas
-			OPCUA.variablesMonitoreadas.push(estaVariable);
-			console.log("Agregando al monitoreo: ",estaVariable.nodeId.value);
-
-		}
-		else
-		{
-			console.log("La variable ya está suscrita: ".yellow + estaVariable.nodeId );
-		}
-	}
-	//ejecuta la función callback entregando la lista de monitoreo limpia
-	callback(limpiarArray(OPCUA.variablesMonitoreadas));
-}
 
 
-
-
-OPCUA.agregarSubscripcion2 = (variable,fxMonitoreo,callback) => {
+OPCUA.agregarSubscripcion = (variable,fxMonitoreo,callback) => {
 	try {
 		OPCUA.subscripcion.monitor(
 			{nodeId: variable, attributeId: 13},
@@ -195,6 +151,8 @@ OPCUA.agregarSubscripcion2 = (variable,fxMonitoreo,callback) => {
 
 
 
+
+
 OPCUA.removerSubscripcion = async(variable,callback) => {
 	try{
 		OPCUA.variablesMonitoreadas.forEach((entry, i) => {
@@ -217,21 +175,6 @@ OPCUA.removerSubscripcion = async(variable,callback) => {
 
 
 
-
-function limpiarArray(ar){
-	var respuesta = ar;
-	for (let i = 0; i < respuesta.length; i++) {
-		try{
-			delete respuesta[i].monitoredItem;
-			delete respuesta[i].attributeId;
-		}
-		catch(err)
-		{
-			console.log(err);
-		}
-	}
-	return respuesta;
-}
 
 
 module.exports = OPCUA;
