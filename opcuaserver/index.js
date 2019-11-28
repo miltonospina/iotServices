@@ -80,7 +80,7 @@ function post_initialize() {
         
             componentOf: device,
         
-            nodeId: "ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.L_Cerrito_P", // a string nodeID
+            nodeId: "ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.CALC_ESCAPE_CABEZAL", // a string nodeID
             browseName: "FreeMemory",
             dataType: "Double",    
             value: {
