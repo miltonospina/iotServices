@@ -11,6 +11,7 @@
     "express": "~4.16.1",
     "morgan": "~1.9.1",
     "mssql": "^6.0.1",
-    "node-opcua": "^2.3.0"
+    "node-opcua": "^2.3.0",
+    "tedious": "^6.6.2"
   }
 }

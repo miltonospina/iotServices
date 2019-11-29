@@ -3,12 +3,11 @@ var router = express.Router();
 
 var controladorMuestreadores = require("../controllers/controladorMuestreadores");
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
 
-	var nuevo= {nombre:"nuevo muestreador", variableWinCC: "un nombre largo"};
-
-	controladorMuestreadores.crear(nuevo,
+router.get('/:id*?', function(req, res, next) {
+	codMuestreador=req.params.id;
+	console.log(req.params);
+	controladorMuestreadores.lista(codMuestreador,res.app.get("opcuaClient"),
 	(respuesta,error)=>{
 		if(error){
 			res.status(500).send(error);
@@ -17,7 +16,22 @@ router.get('/', function(req, res, next) {
 			res.send(respuesta);
 		}
 	});
-
 });
+
+
+router.put('/:id*?', function(req, res, next) {
+	/*codMuestreador=req.params.id;
+	console.log(req.params);
+	controladorMuestreadores.lista(codMuestreador,
+	(respuesta,error)=>{
+		if(error){
+			res.status(500).send(error);
+		}
+		else{
+			res.send(respuesta);
+		}
+	}); */
+});
+
 
 module.exports = router;

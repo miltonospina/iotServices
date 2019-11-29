@@ -85,12 +85,14 @@ OPCUA.desconectar =async () => {
 
 
 OPCUA.leerVariable= async (nodo,callback) => {
+	resultado = null;
+	error = null;
 	try{
 		let resultado= await OPCUA.sesion.read(nodo);
-		callback(resultado);
+		callback(resultado,error);
 	}
 	catch(err){
-		console.log("OCPUA.leerVariable ERROR: ",err);
+		console.log(resultado,error);
 	}
 	
 }

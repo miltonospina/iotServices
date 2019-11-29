@@ -43,7 +43,7 @@ server.on('listening', onListening);
 
 
 
-opcuaClient.conectar(config.endpoint);
+opcuaClient.conectar(config.opcua.endpoint);
 
 
 
