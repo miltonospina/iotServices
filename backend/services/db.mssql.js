@@ -17,4 +17,11 @@ db.consulta= async (consulta,callback)=>{
 	}
 }
 
+
+db.consulta2= async (consulta)=>{
+	await sql.connect(config.db);
+	const result = await sql.query(consulta);
+	return result.recordset;
+}
+
 module.exports = db;

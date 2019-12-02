@@ -1,4 +1,4 @@
-let OPCUA = Array();
+let OPCUA = Object();
 
 const  { 
 	OPCUAClient ,
@@ -66,7 +66,7 @@ OPCUA.conectar = async (endpoint) => {
 
 
 
-OPCUA.desconectar =async () => {
+OPCUA.desconectar = async () => {
 	try{
 		//Cerrar Sesión
 		await OPCUA.sesion.close();
@@ -84,35 +84,17 @@ OPCUA.desconectar =async () => {
 
 
 
-OPCUA.leerVariable= async (nodo,callback) => {
-	resultado = null;
-	error = null;
-	try{
-		let resultado= await OPCUA.sesion.read(nodo);
-		callback(resultado,error);
-	}
-	catch(err){
-		console.log(resultado,error);
-	}
-	
+OPCUA.leerVariable = async(nodo) => {
+	var resultado = await OPCUA.sesion.read({nodeId:nodo});
+	return resultado.value.value;
 }
 
 
 
-
-OPCUA.escribirVariable= async (nodo, valor,callback) => {
-	try{
-		var resultado= await sesion.writeSingleNode(node,{value:valor, dataType:10});
-		callback(resultado);
-	}
-	catch(err)
-	{
-		console.log("OCPUA.escribirVariable ERROR: ",err);
-	}
+OPCUA.escribirVariable= async (nodo, valor) => {
+	var resultado = await sesion.writeSingleNode({"node":nodo},{value:valor, dataType:10});
+	return resultado;
 }
-
-
-
 
 
 

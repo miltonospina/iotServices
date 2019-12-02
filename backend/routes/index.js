@@ -48,5 +48,19 @@ router.delete('/monitorear', function(req,res,next){
 });
 
 
+router.get('/puntual',function (req,res,next)
+{
+	(async ()=>{
+		try {
+			variable = "ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.CALC_ESCAPE_CABEZAL";
+			valorActual = await (res.app.get("opcuaClient")).leerVariable(variable);
+			res.send({"valor":valorActual, "variable": variable});
+		} catch (error) {
+			res.status(500).send(error.message);
+		}
+		
+	})();
+})
+
 
 module.exports = router;
