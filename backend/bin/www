@@ -40,7 +40,7 @@ server.on('listening', onListening);
 
 
 
-
+opcuaClient.conectar(config.opcua.endpoint);
 
 
 

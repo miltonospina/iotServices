@@ -6,6 +6,7 @@ const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
 const monitoringRouter = require('./routes/monitoring');
+const muestreadoresRouter = require('./routes/muestreadores')
 
 const app = express();
 
@@ -15,10 +16,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 
-app.use('/', indexRouter);
-app.use('/monitoring', monitoringRouter)
 
+
+app.use(config.apiVersion+'/', indexRouter);
+app.use(config.apiVersion+'/monitoring', monitoringRouter)
+app.use(config.apiVersion+'/muestreadores',muestreadoresRouter)
 module.exports = app;

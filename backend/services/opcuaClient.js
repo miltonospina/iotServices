@@ -1,4 +1,4 @@
-let OPCUA = Array();
+let OPCUA = Object();
 
 const {
 	OPCUAClient,
@@ -77,7 +77,6 @@ OPCUA.desconectar = async () => {
 		//Cerrar conexión
 		await OPCUA.cliente.disconnect();
 		console.log("Cliente OPCUA desconectado".green);
-
 	}
 	catch (err) {
 		console.log("OCPUA.cerrarSesion ERROR: ".red, err);
