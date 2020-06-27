@@ -3,42 +3,44 @@
 /**
  * Module dependencies.
  */
+
+
+ 
+
+process.stdout.write("\u001b[2J\u001b[0;0H");
+
 var colors = require('colors');
 var app = require('../app');
 var debug = require('debug')('backend:server');
 var http = require('http');
 var config = require('../config.js');
-var async = require('async');
 
-var opcuaClient = require('../services/opcuaClient.js');
+const OPCUA_CLIENT = require('../services/opcuaClient.js');
+OPCUA_CLIENT.conectar(config.endpoint);
 
-/**
- * Get port from environment and store in Express.
- */
-
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
-app.set('opcuaClient',opcuaClient);
+const PORT = normalizePort(process.env.PORT || '3000');
+app.set('port', PORT);
+app.set('opcuaClient', OPCUA_CLIENT);
 /**
  * Create HTTP server.
  */
 
 var server = http.createServer(app);
-console.log("Servidor web iniciado en http://localhost:",port);
+console.log("Servidor web iniciado en http://localhost:",PORT);
 
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(PORT);
 server.on('error', onError);
 server.on('listening', onListening);
 
 
 
 
-opcuaClient.conectar(config.endpoint);
+
 
 
 
@@ -82,9 +84,9 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  var bind = typeof PORT === 'string'
+    ? 'Pipe ' + PORT
+    : 'Port ' + PORT;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {

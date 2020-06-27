@@ -1,0 +1,23 @@
+###
+POST http://localhost:3000/monitoring HTTP/1.1
+content-type: application/json
+
+{"variables":[
+"ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.L_Cerrito_P",
+"ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/PV_ELLIOT.SI",
+"EEE"
+]}
+
+
+###
+DELETE http://localhost:3000/monitoring HTTP/1.1
+content-type: application/json
+
+{"variables":[
+"ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.L_Cerrito_P",
+"ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/PV_ELLIOT.SI"
+]}
+
+
+###
+GET http://localhost:3000/monitoring HTTP/1.1

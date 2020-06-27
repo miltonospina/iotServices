@@ -9,6 +9,6 @@
   "author": "mfol",
   "license": "ISC",
   "dependencies": {
-    "node-opcua": "^2.3.0"
+    "node-opcua": "^2.7.0"
   }
 }
