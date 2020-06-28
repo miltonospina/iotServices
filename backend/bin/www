@@ -9,24 +9,33 @@
 
 process.stdout.write("\u001b[2J\u001b[0;0H");
 
-var colors = require('colors');
-var app = require('../app');
-var debug = require('debug')('backend:server');
-var http = require('http');
-var config = require('../config.js');
-
+const colors = require('colors');
+const app = require('../app');
+const debug = require('debug')('backend:server');
+const http = require('http');
+const config = require('../config.js');
 const OPCUA_CLIENT = require('../services/opcuaClient.js');
-OPCUA_CLIENT.conectar(config.endpoint);
+require('../services/socket.io')
 
-const PORT = normalizePort(process.env.PORT || '3000');
+
+
+OPCUA_CLIENT.conectar(config.opcua.endpoint);
+
+const PORT = normalizePort(process.env.PORT || config.webserver.port);
 app.set('port', PORT);
 app.set('opcuaClient', OPCUA_CLIENT);
+
 /**
  * Create HTTP server.
  */
+const server = http.createServer(app);
 
-var server = http.createServer(app);
-console.log("Servidor web iniciado en http://localhost:",PORT);
+socketIOService = new SocketIO_service(app.listen(port))
+
+
+app.set('socket.io',io)
+app.set('config',config)
+console.log(`Servidor web iniciado en http://localhost:${PORT}`);
 
 
 /**
@@ -36,13 +45,6 @@ console.log("Servidor web iniciado en http://localhost:",PORT);
 server.listen(PORT);
 server.on('error', onError);
 server.on('listening', onListening);
-
-
-
-
-opcuaClient.conectar(config.opcua.endpoint);
-
-
 
 
 

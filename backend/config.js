@@ -1,14 +1,19 @@
 module.exports = {
-	opcua:{
+	opcua: {
 		endpoint: "opc.tcp://localhost:4863",
 		puerto: 7878
 	},
-	db : {
+	db: {
 		user: 'admin',
 		password: 'admin',
-		server: 'localhost\\wincc', 
+		server: 'localhost\\wincc',
 		database: 'labservices'
 	},
-	apiVersion:"/api/v0"
-
+	webServer: {
+		apiVersion: "/api/v0",
+		port:3000
+	},
+	ioServer:{
+		port: 3033
+	}
 }
