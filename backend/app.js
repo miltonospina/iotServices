@@ -1,24 +1,51 @@
-const express = require('express');
-const bodyParser = require("body-parser");
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+/**
+ * Dependencias express. como lo genera exporess generator
+ */
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
 
-const indexRouter = require('./routes/index');
-const monitoringRouter = require('./routes/monitoring');
-
-const config = require('./config');
-//const muestreadoresRouter = require('./routes/muestreadores')
-
-const app = express();
+var app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(config.webServer.apiVersion+'/', indexRouter);
-app.use(config.webServer.apiVersion+'/monitoring', monitoringRouter)
-//app.use(config.apiVersion+'/muestreadores',muestreadoresRouter)
+
+/**
+ * Limpiar pantalla
+ */
+process.stdout.write("\u001b[2J\u001b[0;0H");
+
+
+/**
+ * Dependencias del proyecto
+ */
+ const OPCUA_CLIENT = require('./services/opcuaClient');
+ const SOCKETIO_SERVICE = require('./services/socket.io');
+ const CONFIG = require('./config');
+
+ OPCUA_CLIENT.conectar(CONFIG.opcua.endpoint);
+
+ app.set('opcuaClient', OPCUA_CLIENT);
+ app.set('socket.io',SOCKETIO_SERVICE)
+ app.set('config',CONFIG)
+
+
+/**
+ * Rutas
+ */
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+var monitoringRouter = require('./routes/monitoring');
+
+app.use(CONFIG.webServer.apiVersion+'/', indexRouter);
+app.use(CONFIG.webServer.apiVersion+'/users', usersRouter);
+app.use(CONFIG.webServer.apiVersion+'/monitoring', monitoringRouter);
+
+
 module.exports = app;
