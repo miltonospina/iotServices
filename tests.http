@@ -1,6 +1,7 @@
 ###
 POST http://localhost:3000/api/v0/monitoring HTTP/1.1
 content-type: application/json
+access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGVjayI6dHJ1ZSwidXN1YXJpbyI6Im1mb2wiLCJpYXQiOjE1OTQyMzE4NzEsImV4cCI6MTU5NDIzMzMxMX0.2meKTht1S6bpzta89gA5SDQN7-4zxB06tfVq-H9MtGI
 
 {"variables":[
 "ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.L_Cerrito_P",
@@ -11,6 +12,7 @@ content-type: application/json
 
 ###
 DELETE http://localhost:3000/api/v0/monitoring HTTP/1.1
+access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGVjayI6dHJ1ZSwidXN1YXJpbyI6Im1mb2wiLCJpYXQiOjE1OTQyMzE4NzEsImV4cCI6MTU5NDIzMzMxMX0.2meKTht1S6bpzta89gA5SDQN7-4zxB06tfVq-H9MtGI
 content-type: application/json
 
 {"variables":[
@@ -21,3 +23,13 @@ content-type: application/json
 
 ###
 GET http://localhost:3000/api/v0/monitoring HTTP/1.1
+access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGVjayI6dHJ1ZSwidXN1YXJpbyI6Im1mb2wiLCJpYXQiOjE1OTQyMzE4NzEsImV4cCI6MTU5NDIzMzMxMX0.2meKTht1S6bpzta89gA5SDQN7-4zxB06tfVq-H9MtGI
+content-type: application/json
+
+
+
+####
+POST  http://localhost:3000/api/v0/auth HTTP/1.1
+content-type: application/json
+
+{"usuario":"mfol","contrasena":"holamundo"}

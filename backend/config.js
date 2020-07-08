@@ -11,7 +11,8 @@ module.exports = {
 	},
 	webServer: {
 		apiVersion: "/api/v0",
-		port:3000
+		port:3000,
+		jwtKey: "miclaveultrasecreta123*"
 	},
 	ioServer:{
 		port: 3033

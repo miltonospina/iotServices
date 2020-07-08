@@ -4,7 +4,6 @@ var router = express.Router();
 
 //Obtener la lista de variables monitoreadas
 router.get('/', (req, res, next) => {
-
 	const respuesta = {
 		status: "OK",
 		variablesMonitoreadas: (res.app.get("opcuaClient")).listaVariablesMonitoreadas()
@@ -17,11 +16,12 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
 	const clienteOpcUA = (res.app.get("opcuaClient"))
 	const variables = req.body.variables;
+	const usuario = req.decoded.usuario
 	const respuesta = {
 		status: "UNK",
 		variablesAgregadas: Array()
 	};
-	clienteOpcUA.agregarSubscripcionM(variables, (valor) => { console.log(valor) })
+	clienteOpcUA.agregarSubscripcionM(usuario, variables, (valor) => { console.log(valor) })
 		.then(
 			(response) => {
 				respuesta.errores = response.filter(caso => caso.status == "rejected")
@@ -41,11 +41,12 @@ router.post('/', (req, res, next) => {
 router.delete("/", (req, res, next) => {
 	const clienteOpcUA = (res.app.get("opcuaClient"))
 	const variables = req.body.variables;
+	const usuario = req.decoded.usuario
 	const respuesta = {
 		status: "UNK",
 		variablesAgregadas: Array()
 	};
-	clienteOpcUA.removerSubscripcionM(variables).then(
+	clienteOpcUA.removerSubscripcionM(usuario, variables).then(
 		(response) => {
 			respuesta.errores = response.filter(caso => caso.status == "rejected")
 			respuesta.variablesAgregadas = response.filter(caso => caso.status != "rejected")

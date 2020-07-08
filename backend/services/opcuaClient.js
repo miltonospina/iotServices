@@ -112,12 +112,13 @@ OPCUA.escribirVariable = async (nodo, valor, callback) => {
 
 
 
-const agregarSubscripcionP = (variable, fxMonitoreo) => {
+const agregarSubscripcionP = (subscriptor, variable, fxMonitoreo) => {
 	return new Promise(async (resolve, reject) => {
 		try {
 
 			if ((OPCUA.listaVariablesMonitoreadas()).includes(variable)) {
-				reject("La variable ya está siendo monitoreada")
+				monitoredItem.subscriptores.push(subscriptor)
+				resolve(variable)
 				return
 			}
 			let itemToMonitor = { nodeId: variable, attributeId: OPCUA.AttributeIds.Value }
@@ -135,6 +136,10 @@ const agregarSubscripcionP = (variable, fxMonitoreo) => {
 						fxMonitoreo({ variable: variable, valor: dataValue.value.value.toString() })
 					});
 					monitoredItem.variable = variable
+					monitoredItem.subscriptores = Array();
+					monitoredItem.subscriptores.push(subscriptor);
+					monitoredItem.subscriptores = [...new Set(monitoredItem.subscriptores)]
+
 					OPCUA.variablesMonitoreadas.push(monitoredItem);
 					resolve(variable)
 				});
@@ -145,11 +150,11 @@ const agregarSubscripcionP = (variable, fxMonitoreo) => {
 }
 
 
-OPCUA.agregarSubscripcionM = (variables, fxMonitoreo) => {
+OPCUA.agregarSubscripcionM = (subscriptor, variables, fxMonitoreo) => {
 	//Mapea el array de variables a un array de promesas
 	let listadoPromersas = variables.map(
 		(variable) => {
-			return agregarSubscripcionP(variable, fxMonitoreo)
+			return agregarSubscripcionP(subscriptor, variable, fxMonitoreo)
 		});
 	return Promise.allSettled(listadoPromersas)
 }
@@ -158,17 +163,17 @@ OPCUA.agregarSubscripcionM = (variables, fxMonitoreo) => {
 OPCUA.listaVariablesMonitoreadas = () => {
 	const lista = OPCUA.variablesMonitoreadas.map(
 		(item) => {
-			return item.variable
+			return { variable: item.variable, subscriptores: item.subscriptores }
 		})
 	return lista
 }
 
-const removerSubscripcionP = (variable) => {
+const removerSubscripcionP = (subscriptor, variable) => {
 	return new Promise((resolve, reject) => {
 		try {
 			let indice = -1
 			OPCUA.listaVariablesMonitoreadas().forEach((entry, i) => {
-				if (entry == variable) {
+				if (entry.variable == variable) {
 					indice = i
 				}
 			});
@@ -176,10 +181,18 @@ const removerSubscripcionP = (variable) => {
 				reject("La variable no está siendo monitoreada")
 				return
 			}
-			OPCUA.variablesMonitoreadas[indice].terminate((x) => {
-				OPCUA.variablesMonitoreadas.splice(indice, 1);
-				resolve(`Eliminada la posición ${indice} de la lista de monitoreo `, x)
-			})
+			let _subs = OPCUA.variablesMonitoreadas[indice].subscriptores
+			_subs = _subs.filter(sbs => sbs != subscriptor);
+
+			if (_subs.length == 0) {
+				OPCUA.variablesMonitoreadas[indice].terminate((x) => {
+					OPCUA.variablesMonitoreadas.splice(indice, 1);
+					resolve(`Eliminada la posición ${indice} de la lista de monitoreo `, x)
+				})
+			}
+			else {
+				resolve(`La subscripción a la variable eliminada para el usuario: ${subscriptor}`)
+			}
 
 		} catch (error) {
 			console.error(error)
@@ -189,11 +202,11 @@ const removerSubscripcionP = (variable) => {
 }
 
 
-OPCUA.removerSubscripcionM = (variables, fxMonitoreo) => {
+OPCUA.removerSubscripcionM = (subscriptor, variables) => {
 	//Mapea el array de variables a un array de promesas
 	let listadoPromersas = variables.map(
 		(variable) => {
-			return removerSubscripcionP(variable, fxMonitoreo)
+			return removerSubscripcionP(subscriptor, variable)
 		});
 	return Promise.allSettled(listadoPromersas)
 }
