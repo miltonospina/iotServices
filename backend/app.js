@@ -39,7 +39,16 @@ OPCUA_CLIENT.conectar(CONFIG.opcua.endpoint);
 app.set('opcuaClient', OPCUA_CLIENT);
 
 var server = require('http').Server(app);
+
+//Esto debería ir en su propio archivo
 var io = require('socket.io')(server);
+io.on('connection', (socket) => {
+    console.log('un usuario se conectó a socket.io');
+    socket.on('disconnect', () => {
+      console.log('un usuario se conectó a socket.io');
+    });
+  });
+
 app.set('io', io);
 
 app.set('config', CONFIG)

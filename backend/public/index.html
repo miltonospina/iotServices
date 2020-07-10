@@ -1,13 +1,22 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <title>Express</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
 </head>
 
 <body>
-  <h1>Express</h1>
-  <p>Welcome to Express</p>
+  <input type="text" id="salida">
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+    var salida = document.querySelector("#salida")
+    socket.on('monitoring', function (msg) {
+      salida.value =msg.valor
+    });
+  </script>
 </body>
 
 </html>
