@@ -6,6 +6,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+
 var app = express();
 
 app.use(logger('dev'));
@@ -17,9 +18,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 /**
- * Limpiar pantalla
+ * Limpiar pantalla y habilitar colores
  */
-process.stdout.write("\u001b[2J\u001b[0;0H");
+const colors = require('colors');
+const clear = require('clear-screen')
+clear()
 
 
 /**
