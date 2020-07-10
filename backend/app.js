@@ -23,24 +23,28 @@ app.use(express.static(path.join(__dirname, 'public')));
 const colors = require('colors');
 const clear = require('clear-screen')
 clear()
+console.log("##################################################################".cyan)
 
 
 /**
  * Dependencias del proyecto
  */
- const OPCUA_CLIENT = require('./services/opcuaClient');
- const SOCKETIO_SERVICE = require('./services/socket.io');
- const CONFIG = require('./config');
- const jwt = require('jsonwebtoken');
- const authMiddleware = require('./middlewares/auth')
+const jwt = require('jsonwebtoken');
+const OPCUA_CLIENT = require('./services/opcuaClient');
+const CONFIG = require('./config');
+const authMiddleware = require('./middlewares/auth')
 
- OPCUA_CLIENT.conectar(CONFIG.opcua.endpoint);
+OPCUA_CLIENT.conectar(CONFIG.opcua.endpoint);
 
- app.set('opcuaClient', OPCUA_CLIENT);
- app.set('socket.io',SOCKETIO_SERVICE)
- app.set('config',CONFIG)
- app.set('jwt',jwt)
- app.set('jwtKey', CONFIG.webServer.jwtKey);
+app.set('opcuaClient', OPCUA_CLIENT);
+
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+app.set('io', io);
+
+app.set('config', CONFIG)
+app.set('jwt', jwt)
+app.set('jwtKey', CONFIG.webServer.jwtKey);
 
 
 /**
@@ -52,10 +56,10 @@ var authRouter = require('./routes/auth');
 var monitoringRouter = require('./routes/monitoring');
 
 
-app.use(CONFIG.webServer.apiVersion+'/', indexRouter);
-app.use(CONFIG.webServer.apiVersion+'/auth', authRouter);
-app.use(CONFIG.webServer.apiVersion+'/users', usersRouter);
-app.use(CONFIG.webServer.apiVersion+'/monitoring',authMiddleware, monitoringRouter);
+app.use(CONFIG.webServer.apiVersion + '/', indexRouter);
+app.use(CONFIG.webServer.apiVersion + '/auth', authRouter);
+app.use(CONFIG.webServer.apiVersion + '/users', usersRouter);
+app.use(CONFIG.webServer.apiVersion + '/monitoring', authMiddleware, monitoringRouter);
 
 
-module.exports = app;
+module.exports = {app, server};
