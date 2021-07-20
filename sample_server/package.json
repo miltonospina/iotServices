@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "node-opcua": "^2.47.0"
+  },
+  "name": "opcua_sample_server",
+  "version": "1.0.0",
+  "description": "opc ua sample server",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/node-opcua/node-opcua/blob/bc0fd185f4905cd03c83c7a278365424f2b46bac/documentation/sample_server.js"
+  },
+  "keywords": [
+    "opcua",
+    "sample",
+    "server"
+  ],
+  "author": "erossignon ; Weihong Guan",
+  "license": "ISC"
+}
