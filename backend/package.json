@@ -1,0 +1,31 @@
+{
+  "name": "iot_services_backend",
+  "version": "1.0.0",
+  "description": "iot services backend opcua client/ web api server",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx tsc -p tsconfig.json && node build/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miltonospina/iotServices.git"
+  },
+  "keywords": [
+    "iot",
+    "opcua",
+    "web",
+    "api"
+  ],
+  "author": "miltonospina <miltonospina@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miltonospina/iotServices/issues"
+  },
+  "homepage": "https://github.com/miltonospina/iotServices#readme",
+  "dependencies": {
+    "@types/node": "^16.3.3",
+    "node-opcua-client": "^2.47.0",
+    "typescript": "^4.3.5"
+  }
+}
