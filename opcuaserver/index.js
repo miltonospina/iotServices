@@ -68,8 +68,9 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require("node-opcua");
      * @return {double}
      */
     function available_memory() {
-        // var value = process.memoryUsage().heapUsed / 1000000;
-        const percentageMemUsed = os.freemem() / os.totalmem() * 100.0;
+        console.log("mem")
+        const percentageMemUsed = process.memoryUsage().heapUsed / 1000000;
+        //const percentageMemUsed = os.freemem() / os.totalmem() * 100.0;
         return percentageMemUsed;
     }
     namespace.addVariable({
@@ -80,7 +81,7 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require("node-opcua");
         browseName: "FreeMemory",
         dataType: "Double",
         value: {
-            get: () => new Variant({ dataType: DataType.Double, value: available_memory() })
+            get: () => new Variant({ dataType: DataType.Double, value: Math.random()*100 }),
         }
     });
 

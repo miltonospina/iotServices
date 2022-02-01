@@ -32,7 +32,8 @@ import {
     endpointMustExist: false,
   };
   const client = OPCUAClient.create(options);
-  const endpointUrl = "opc.tcp://localhost:4863";
+  //const endpointUrl = "opc.tcp://localhost:4863";
+  const endpointUrl = "opc.tcp://CLIENTEWEB:4334/UA/MyLittleServer";
   
   
   async function main() {
@@ -47,7 +48,8 @@ import {
       console.log("session created !");
   
       const nodeToRead = {
-        nodeId: "ns=1;s=t|SERVIDORES_SERVIDOR1::Control_Loops/Scale_8/FF-102.IN",
+        //nodeId: "ns=1;s=t|SERVIDORES_SERVIDOR1::Control_Loops/Scale_8/FF-102.IN",
+        nodeId:"ns=1;b=1020FFAA",
         attributeId: AttributeIds.Value
       };
     
@@ -64,7 +66,7 @@ import {
       });
   
       subscription.on("started", function () {
-        console.log("subscription started for 2 seconds - subscriptionId =", subscription.subscriptionId);
+        console.log("subscription started for eva - subscriptionId =", subscription.subscriptionId);
       }).on("keepalive", function () {
         console.log("keepalive");
       }).on("terminated", function () {
@@ -90,6 +92,8 @@ import {
       monitoredItem.on("changed", (dataValue: DataValue) => {
         console.log(" value has changed : ", dataValue.value.value);
       });
+
+    
   
       //await for ever; never resolves
       await new Promise(_ => { });
