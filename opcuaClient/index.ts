@@ -88,7 +88,7 @@ import {
         parameters,
         TimestampsToReturn.Both
       );
-  
+    
       monitoredItem.on("changed", (dataValue: DataValue) => {
         console.log(" value has changed : ", dataValue.value.value);
       });
