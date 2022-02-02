@@ -5,5 +5,63 @@
     <meta charset="UTF-8" />
     <title>Home</title>
   </head>
-  <body></body>
+  <body>
+    <ul id="messages"></ul>
+    <button type="button" id="subscribe">Subscribirse</button>
+    <button type="button" id="unsuscribe">Cancelar</button>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const subscribeButton = document.getElementById('subscribe');
+    const unsuscribeButton = document.getElementById('unsuscribe');
+    const APIURL = 'http://localhost:3000/api/opcua/monitoring';
+
+    let variables = ['ns=1;s=free_memory', 'ns=1;b=1020FFAA'];
+
+    subscribeButton.addEventListener('click', () => {
+      (async () => {
+        const response = await fetch(APIURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ variables }),
+        });
+        //const data = await response.json();
+        console.log(response);
+      })();
+    });
+
+    unsuscribeButton.addEventListener('click', () => {
+      (async () => {
+        const response = await fetch(APIURL, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ variables }),
+        });
+        //const data = await response.json();
+        console.log(response);
+      })();
+    });
+
+    const socket = io();
+    const lista = document.querySelector('#messages');
+    socket.on('connect', function () {
+      console.log('Connected to server');
+    });
+    socket.on('data', function (msg) {
+      //if no element with id 'msg.nodeId' exists, create one inside the list
+      if (!document.getElementById(msg.nodeId)) {
+        const li = document.createElement('li');
+        li.id = msg.nodeId;
+        li.innerHTML = `<strong>${msg.nodeId}</strong> - ${msg.value}`;
+        lista.appendChild(li);
+      } else {
+        //if element with id 'msg.nodeId' exists, update its content
+        document.getElementById(msg.nodeId).innerHTML = `<strong>${msg.nodeId}</strong> - ${msg.value}`;
+      }
+    });
+  </script>
 </html>

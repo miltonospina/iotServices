@@ -34,10 +34,10 @@ const parameters: MonitoringParametersOptions = {
 export class OpcuaClientService {
   endpointUrl = '';
 
-  client: OPCUAClient;
-  session: any;
-  subscription: any;
-  monitoredItems: ClientMonitoredItem[] = [];
+  private client: OPCUAClient;
+  private session: any;
+  private subscription: any;
+  private monitoredItems: ClientMonitoredItem[] = [];
 
   constructor(endpointUrl: string) {
     this.endpointUrl = endpointUrl;

@@ -2,7 +2,9 @@ import StatusCodes from 'http-status-codes';
 import { Request, Response } from 'express';
 
 import { paramMissingError } from '@shared/constants';
-import { OpcuaClientService } from 'src/services/opcuaClient.service';
+import { OpcuaClientService } from 'src/services/opcua-client.service';
+
+import SocketIO from 'socket.io';
 
 const { BAD_REQUEST, CREATED, OK } = StatusCodes;
 
@@ -21,10 +23,14 @@ export async function addMonitoredItem(req: Request, res: Response) {
     });
   }
 
-  const opcua: OpcuaClientService = req.app.get('opcuaClientService');
+  const opcua: OpcuaClientService = req.app.get('opcua');
+  const io: SocketIO.Server = req.app.get('socketio');
 
   variables.forEach((nodeId: string) => {
-    opcua.addMonitoredItem(nodeId, (dv) => console.log(nodeId, dv.value.value));
+    opcua.addMonitoredItem(nodeId, (dataValue) => {
+      io.emit('data', { nodeId, value: dataValue.value.value });
+      console.log(`${nodeId}: ${dataValue.value.value}`);
+    });
   });
   return res.sendStatus(CREATED);
 }
@@ -44,7 +50,7 @@ export async function removeMonitoredItem(req: Request, res: Response) {
     });
   }
 
-  const opcua: OpcuaClientService = req.app.get('opcuaClientService');
+  const opcua: OpcuaClientService = req.app.get('opcua');
 
   variables.forEach((nodeId: string) => {
     opcua.removeMonitoredItem(nodeId);
@@ -52,7 +58,14 @@ export async function removeMonitoredItem(req: Request, res: Response) {
   return res.sendStatus(OK);
 }
 
+/**
+ * Get a list of all monitored items.
+ *
+ * @param req
+ * @param res
+ * @returns
+ */
 export async function getMonitoredItemsList(req: Request, res: Response) {
-  const opcua: OpcuaClientService = req.app.get('opcuaClientService');
+  const opcua: OpcuaClientService = req.app.get('opcua');
   return res.send(opcua.monitoredItemsNodeIds);
 }

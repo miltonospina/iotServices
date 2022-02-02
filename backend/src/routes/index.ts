@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import opcuaRouter from './opcua';
+import opcuaRouter from './opcua-client.router';
 
 // Export the base-router
 const baseRouter = Router();

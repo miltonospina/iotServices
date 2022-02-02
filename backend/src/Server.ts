@@ -9,7 +9,10 @@ import 'express-async-errors';
 
 import BaseRouter from './routes';
 import logger from 'jet-logger';
-import { OpcuaClientService } from './services/opcuaClient.service';
+import { OpcuaClientService } from './services/opcua-client.service';
+
+import http from 'http';
+import { Server as SocketIo } from 'socket.io';
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
@@ -50,8 +53,7 @@ const opcuaClientService = new OpcuaClientService(endpointUrl);
     console.log('OPCUA client: error', err.message);
   }
 })();
-
-app.set('opcuaClientService', opcuaClientService);
+app.set('opcua', opcuaClientService);
 
 // Add APIs
 app.use('/api', BaseRouter);
@@ -73,9 +75,24 @@ const viewsDir = path.join(__dirname, 'views');
 app.set('views', viewsDir);
 const staticDir = path.join(__dirname, 'public');
 app.use(express.static(staticDir));
-app.get('*', (req: Request, res: Response) => {
+
+app.get('/', (req: Request, res: Response) => {
   res.sendFile('index.html', { root: viewsDir });
 });
 
+// Socket.io
+
+const server = http.createServer(app);
+const io = new SocketIo(server);
+
+io.sockets.on('connect', () => {
+  console.log('Socket.io: connected');
+  return app.set('socketio', io);
+});
+
+io.on('connection', (socket) => {
+  socket.broadcast.emit('hi');
+});
+
 // Export express instance
-export default app;
+export default server;

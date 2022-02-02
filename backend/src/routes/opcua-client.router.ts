@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addMonitoredItem, getMonitoredItemsList, removeMonitoredItem } from '../controllers/opcua.controller';
+import { addMonitoredItem, getMonitoredItemsList, removeMonitoredItem } from '../controllers/opcua-client.controller';
 
 // User-route
 const opcuaRouter = Router();
