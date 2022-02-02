@@ -1,4 +1,21 @@
 ###
+GET http://localhost:3000/api/opcua/monitoring HTTP/1.1
+content-type: application/json
+
+###
+POST http://localhost:3000/api/opcua/monitoring HTTP/1.1
+content-type: application/json
+
+{"variables":["ns=1;s=free_memory","ns=1;b=1020FFAA"]}
+
+
+###
+delete http://localhost:3000/api/opcua/monitoring HTTP/1.1
+content-type: application/json
+
+{"variables":["ns=1;s=free_memory"]}
+
+###
 POST http://localhost:3000/api/v0/monitoring HTTP/1.1
 content-type: application/json
 access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaGVjayI6dHJ1ZSwidXN1YXJpbyI6Im1mb2wiLCJpYXQiOjE1OTQyMzE4NzEsImV4cCI6MTU5NDIzMzMxMX0.2meKTht1S6bpzta89gA5SDQN7-4zxB06tfVq-H9MtGI
