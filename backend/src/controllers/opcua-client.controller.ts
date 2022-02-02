@@ -69,3 +69,48 @@ export async function getMonitoredItemsList(req: Request, res: Response) {
   const opcua: OpcuaClientService = req.app.get('opcua');
   return res.send(opcua.monitoredItemsNodeIds);
 }
+
+
+/**
+ * Get a list of all monitored items.
+ *
+ * @param req
+ * @param res
+ * @returns
+ */
+ export async function writeValue(req: Request, res: Response) {
+  const { nodeId, value } = req.body;
+
+  if (!nodeId || !value) {
+    return res.status(BAD_REQUEST).json({
+      error: paramMissingError,
+    });
+  }
+  const opcua: OpcuaClientService = req.app.get('opcua');
+  
+  await opcua.writeValue(nodeId, value);
+  return res.sendStatus(OK);
+}
+
+
+
+/**
+ * Get a list of all monitored items.
+ *
+ * @param req
+ * @param res
+ * @returns
+ */
+ export async function readValue(req: Request, res: Response) {
+  const { nodeId } = req.query;
+  if (!nodeId) {
+    return res.status(BAD_REQUEST).json({
+      error: paramMissingError,
+    });
+  }
+  const opcua: OpcuaClientService = req.app.get('opcua');
+  
+  const value = await opcua.readValue(nodeId.toString());  
+  return res.send(value);
+}
+

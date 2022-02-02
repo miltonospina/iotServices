@@ -6,6 +6,7 @@ declare module 'express' {
       user: IUser;
       nodeId: string;
       variables: string[];
+      value: any;
     };
   }
 }

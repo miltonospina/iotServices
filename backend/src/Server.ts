@@ -36,7 +36,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // OpcUA Client Service
-const endpointUrl = 'opc.tcp://G14-SYM:4334/UA/MyLittleServer';
+//const endpointUrl = 'opc.tcp://localhost:4334/UA/MyLittleServer';
+const endpointUrl = 'opc.tcp://localhost:4863';
 const opcuaClientService = new OpcuaClientService(endpointUrl);
 
 (async () => {

@@ -9,14 +9,36 @@
     <ul id="messages"></ul>
     <button type="button" id="subscribe">Subscribirse</button>
     <button type="button" id="unsuscribe">Cancelar</button>
+    <div>
+      <input type="text" id="valor">
+      <button type="button" id="escribir">Escribir</button>
+    </div>
   </body>
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const subscribeButton = document.getElementById('subscribe');
     const unsuscribeButton = document.getElementById('unsuscribe');
+    const writeButton = document.getElementById('escribir');
+    const valor = document.getElementById('valor');
+
+    var url = new URL('http://localhost:3000/api/opcua/value');
+    var params = [['nodeId', 'ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.L_Cerrito_P']]
+    url.search = new URLSearchParams(params).toString();
+
+    fetch(url).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      console.log(data);
+    });
+
     const APIURL = 'http://localhost:3000/api/opcua/monitoring';
 
-    let variables = ['ns=1;s=free_memory', 'ns=1;b=1020FFAA'];
+    let variables = ['ns=1;s=free_memory', 'ns=1;b=1020FFAA','ns=1;i=1001'];
+    variables =[
+"ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.L_Cerrito_P",
+"ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/PV_ELLIOT.SI",
+"ns=1;s=t|SERVIDORES_SERVIDOR1::Programa_Caldera/ENER.Trafo2_V"
+];
 
     subscribeButton.addEventListener('click', () => {
       (async () => {
@@ -40,6 +62,21 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ variables }),
+        });
+        //const data = await response.json();
+        console.log(response);
+      })();
+    });
+
+
+    writeButton.addEventListener('click', () => {
+      (async () => {
+        const response = await fetch('http://localhost:3000/api/opcua/value', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ value: valor.value, nodeId:variables[2] }),
         });
         //const data = await response.json();
         console.log(response);

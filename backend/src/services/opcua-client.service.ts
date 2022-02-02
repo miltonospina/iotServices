@@ -10,6 +10,9 @@ import {
   DataValue,
   OPCUAClientOptions,
   ConnectionStrategyOptions,
+  ClientSession,
+  WriteValueOptions,
+  DataType,
 } from 'node-opcua-client';
 
 const connectionStrategy: ConnectionStrategyOptions = {
@@ -35,13 +38,13 @@ export class OpcuaClientService {
   endpointUrl = '';
 
   private client: OPCUAClient;
-  private session: any;
+  private session: undefined|ClientSession;
   private subscription: any;
   private monitoredItems: ClientMonitoredItem[] = [];
 
   constructor(endpointUrl: string) {
     this.endpointUrl = endpointUrl;
-    this.client = OPCUAClient.create(options);
+    this.client = OPCUAClient.create(options);    
   }
 
   async connect() {
@@ -55,6 +58,9 @@ export class OpcuaClientService {
   }
 
   createSubscription() {
+    if(!this.session) {
+      return;
+    }
     this.subscription = ClientSubscription.create(this.session, {
       requestedPublishingInterval: 1000,
       requestedLifetimeCount: 100,
@@ -78,7 +84,9 @@ export class OpcuaClientService {
   }
 
   async closeSession() {
-    return this.session.close();
+    if (this.session) {
+      await this.session.close();
+    }
   }
 
   async disconect() {
@@ -117,5 +125,33 @@ export class OpcuaClientService {
 
   get monitoredItemsNodeIds() {
     return this.monitoredItems.map((item) => item.itemToMonitor.nodeId.toString());
+  }
+
+  async writeValue(nodeId: string, value: any) {
+    if(!this.session) {
+      return;
+    }
+  
+    return await this.session.write({
+      nodeId: nodeId,
+      attributeId: AttributeIds.Value,
+      value:{
+        value: {
+          value: value,
+          dataType: DataType.Double,
+        },        
+      }
+    });
+  }
+
+
+  async readValue(nodeId: string) {
+    if(!this.session) {
+      return;
+    }
+    return await this.session.read({
+      nodeId: nodeId,
+      attributeId: AttributeIds.Value,
+    });
   }
 }
