@@ -18,12 +18,14 @@ npm run start:dev
 
 Webserver also exposes a REST API for handling op.
 
-| METHOD | ENDPOINT                   | ACTION                                  |
-| ------ | -------------------------- | --------------------------------------- |
-| GET    | [/](#)                     | home page                               |
-| GET    | [/api/opcua/monitoring](#) | Return the list of monitored variables  |
-| POST   | [/api/opcua/monitoring](#) | Add variables to the monitored items    |
-| DELETE | [/api/opcua/monitoring](#) | Remove variables to the monitored items |
+| METHOD | ENDPOINT                   | ACTION                                      |
+| ------ | -------------------------- | ------------------------------------------- |
+| GET    | [/](#)                     | home page                                   |
+| GET    | [/api/opcua/monitoring](#) | Return the list of monitored variables      |
+| POST   | [/api/opcua/monitoring](#) | Add variables to the monitored items        |
+| DELETE | [/api/opcua/monitoring](#) | Remove variables to the monitored items     |
+| GET    | [/api/opcua/value](#)      | Return the value of the variable via nodeId |
+| POST   | [/api/opcua/value](#)      | Set the value of the variable via nodeId    |
 
 ## Starting the OPC UA demo server
 
