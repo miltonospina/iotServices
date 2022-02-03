@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npx tsc -p tsconfig.json && node build/index.js",
+    "demo": "npx tsc -p tsconfig.json && node build/opcua-client/sync-service.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
